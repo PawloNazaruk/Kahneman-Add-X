@@ -1,6 +1,8 @@
 class NumberGame:
-    pass
+
+    def __init__(self, number):
+        self._number = number
+
 
     def game(self):
-        number = 3245
-        return str(number)
+        return str(self._number)
