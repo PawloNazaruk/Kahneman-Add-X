@@ -2,26 +2,20 @@ import unittest
 
 from assertpy import assert_that
 
-from cls.NumberGame import NumberGame
+from cls.NumberGame import AddX
 
 
 class TestNumberGame(unittest.TestCase):
 
     def setUp(self):
-        self.client = NumberGame(number=6543)
+        self.game = AddX()
 
     def tearDown(self):
         pass
 
-    def test_game_return_one_number(self):
+    def test_display_number_with_four_length(self):
         # given
+        number = "3333"
         # when
         # then
-        assert_that(self.client.game()).is_digit()
-
-    def test_game_return_one_given_number(self):
-        # given
-        number = "6543"
-        # when
-        # then
-        assert_that(self.client.game()).is_equal_to(number)
+        assert_that(self.game.display_number()).is_equal_to(number)

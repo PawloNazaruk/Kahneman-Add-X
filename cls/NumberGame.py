@@ -1,8 +1,11 @@
-class NumberGame:
+class AddX:
 
-    def __init__(self, number):
-        self._number = number
+    def __init__(self, length=4):
+        self.length = length
 
 
-    def game(self):
-        return str(self._number)
+    def display_number(self):
+        number = 3333
+        return str(number)
+
+
