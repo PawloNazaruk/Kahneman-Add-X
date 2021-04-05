@@ -29,6 +29,7 @@ class TestNumberGame(unittest.TestCase):
         # then
         assert_that(result).is_length(length)
 
+    @unittest.skip('nothing to do here')
     def test_display_possible_max_number_with_default_length(self):
         # given
         test_max_number = "9999"
@@ -36,5 +37,16 @@ class TestNumberGame(unittest.TestCase):
         result = self.game.display_number()
         # then
         assert_that(result).is_equal_to(test_max_number)
+
+    def test_display_random_number_with_default_length(self):
+        # given
+        minimum = 1000
+        maximum = 9999
+        # when
+        result = self.game.display_number()
+        result = int(result)
+        print(result)
+        # then
+        assert_that(result).is_between(minimum, maximum)
 
 
