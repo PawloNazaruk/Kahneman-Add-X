@@ -1,2 +1,2 @@
-# NumberGame_placeholder
+# Kahneman Add X
 Kahneman's experiment/game implementation.
