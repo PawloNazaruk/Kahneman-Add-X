@@ -1,5 +1,4 @@
 import unittest
-import time
 from datetime import datetime
 
 from assertpy import assert_that
@@ -35,7 +34,7 @@ class TestNumberGame(unittest.TestCase):
     def test_display_number_with_given_length(self):
         # given
         length = 2
-        self.game = AddX(length=2, amount=1)
+        self.game = GameAddX(length=2, amount=1)
         # when
         result = self.game.display_numbers()
         # then
@@ -67,7 +66,7 @@ class TestNumberGame(unittest.TestCase):
         # given
         pattern = r"^\d{4}\n\d{4}\n\d{4}\n\d{4}\n\d{4}$"
         kwargs = {"length": 4, "amount": 5}
-        self.game = AddX(**kwargs)
+        self.game = GameAddX(**kwargs)
         # when
         result = self.game.display_numbers()
         print(result)
@@ -77,7 +76,7 @@ class TestNumberGame(unittest.TestCase):
     @unittest.skip()
     def test_display_number_with_default_wait_time(self):
         # given
-        self.game = AddX(length=4, amount=1, wait=3)
+        self.game = GameAddX(length=4, amount=1, wait=3)
         # when
         start_time = datetime.now()
         self.game.display_number()
