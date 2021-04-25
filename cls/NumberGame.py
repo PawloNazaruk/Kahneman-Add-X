@@ -1,4 +1,5 @@
 from collections import namedtuple
+from threading import Thread
 from pprint import pprint
 import random
 import time
@@ -14,6 +15,7 @@ class GameAddX:
         self._math_operation = operation
         self._math_operation_sign = int(digit_for_operation)
         self._game_session = self.make_game_session()
+        self._input = []
 
     def game(self):
         for seq in self._game_session:
@@ -27,21 +29,22 @@ class GameAddX:
             """pause"""
             self.wait_pause()
 
-            """ digits given by the user after the action
-                @2 Gather input without stopping time"""
-            for i in range(self._numbers_amount):
+            """catching answers"""
+            for i in range(self._number_length):
+                get_input_thread = Thread(target=self.get_input)
+                get_input_thread.daemon = True  # Otherwise the thread won't be terminated when the main program terminates.
+                get_input_thread.start()
+                get_input_thread.join(timeout=3)
 
-                start = time.time()
-                stop = time.time()
-                delta = stop - start
-                user_input = ""
-                print("start")
-                print(delta)
-                while delta <= self._time_per_number:
-                    pair.answer_digits.append(user_input)
-                    delta = time.time() - start
-                print("end")
-                print(delta)
+                seq.answer_digits.append(self._input[0])
+                self._input.clear()
+        print(self._game_session)
+
+    def get_input(self):
+        print("Waiting for input: ...")
+        while True:
+            _input = input()
+            self._input.append(_input)
 
     def wait_number(self) -> None:
         time.sleep(self._time_per_number)
@@ -82,16 +85,10 @@ class GameAddX:
         }.get(self._math_operation, "Incorrect operation")
 
 
-
-
-
-
-
-
 # property na limity
 default_kwargs = {
-            "length": 4,
-            "amount": 3,
+            "length": 3,
+            "amount": 1,
             "time_for_number": 1,
             "time_for_pause": 1,
             "operation": "+",

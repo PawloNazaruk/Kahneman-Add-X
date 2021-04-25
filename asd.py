@@ -13,15 +13,6 @@ def get_kbd_input(result_queue):
     time.sleep(5)
 
 
-def count_time(result_queue):
-    print(f"'count_time' process started.")
-    for i in range(2):
-        kbd_input_process = multiprocessing.Process(target=get_kbd_input, args=(result_queue,))
-        kbd_input_process.start()
-        time.sleep(5)
-
-
-
 
 def main():
     all_processes = []
