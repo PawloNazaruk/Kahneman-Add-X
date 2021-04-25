@@ -27,8 +27,12 @@ class GameAddX:
             pprint(seq.correct_digits)
             if seq.answer_digits == seq.correct_digits:
                 counter += 1
-        score = float(counter / self._numbers_amount)
-        print(f'Score: {score:.2}')
+
+        print(counter)
+        print(self._numbers_amount)
+        score = float((counter / self._numbers_amount) * 100)
+        print(score)
+        print(f'Score: {int(score)}%')
 
     def game(self):
         for seq in self._game_session:
@@ -75,13 +79,18 @@ class GameAddX:
             "answer_digits",
         ])
 
-        number = self.generate_number_from_range()
-        number_digits = self.divide_on_digits(number)
-        correct_digits = self.generate_answer_number_digits(number)
-        answer_digits = []
+        game_session = []
+        for i in range(self._numbers_amount):
 
-        seq = Sequence(number_digits, correct_digits, answer_digits)
-        return [seq for _ in range(self._numbers_amount)]
+            number = self.generate_number_from_range()
+            number_digits = self.divide_on_digits(number)
+            correct_digits = self.generate_answer_number_digits(number)
+            answer_digits = []
+
+            seq = Sequence(number_digits, correct_digits, answer_digits)
+            game_session.append(seq)
+
+        return game_session
 
     def generate_number_from_range(self) -> str:
         number_min = 10 ** (self._number_length - 1)
@@ -111,7 +120,7 @@ else:
 # property na limity
 default_kwargs = {
             "length": 2,
-            "amount": 1,
+            "amount": 2,
             "time_for_number": 1,
             "time_for_pause": 1,
             "operation": "+",
