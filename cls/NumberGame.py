@@ -17,6 +17,19 @@ class GameAddX:
         self._game_session = self.make_game_session()
         self._input = []
 
+    def show_score(self):
+        counter = 0
+        print(self._game_session)
+        for seq in self._game_session:
+            print('answer')
+            pprint(seq.answer_digits)
+            print('correct')
+            pprint(seq.correct_digits)
+            if seq.answer_digits == seq.correct_digits:
+                counter += 1
+        score = float(counter / self._numbers_amount)
+        print(f'Score: {score:.2}')
+
     def game(self):
         for seq in self._game_session:
             pprint(self._game_session)
@@ -34,9 +47,12 @@ class GameAddX:
                 get_input_thread = Thread(target=self.get_input)
                 get_input_thread.daemon = True  # Otherwise the thread won't be terminated when the main program terminates.
                 get_input_thread.start()
-                get_input_thread.join(timeout=3)
+                get_input_thread.join(timeout=self._time_per_number)
 
-                seq.answer_digits.append(self._input[0])
+                if self._input:
+                    seq.answer_digits.append(self._input[0])
+                else:
+                    seq.answer_digits.append('')
                 self._input.clear()
         print(self._game_session)
 
@@ -85,9 +101,16 @@ class GameAddX:
         }.get(self._math_operation, "Incorrect operation")
 
 
+asd = ['1', '2', '3']
+qwe = ['1', '2', '3']
+if asd == qwe:
+    print("YEA")
+else:
+    print("NYA")
+
 # property na limity
 default_kwargs = {
-            "length": 3,
+            "length": 2,
             "amount": 1,
             "time_for_number": 1,
             "time_for_pause": 1,
@@ -96,3 +119,4 @@ default_kwargs = {
         }
 asd = GameAddX(**default_kwargs)
 asd.game()
+asd.show_score()
