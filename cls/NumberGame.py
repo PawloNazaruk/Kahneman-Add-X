@@ -1,9 +1,15 @@
 from collections import namedtuple
 from threading import Thread
+from playsound import playsound
 from pprint import pprint
 import random
 import time
 
+
+#BEEP_PATH = 'media\\beep.wav'
+BEEP_PATH = 'C:\\python\\projects\\KahnemanAddX\\media\\beep.wav'
+
+playsound(BEEP_PATH)
 
 class GameAddX:
 
@@ -35,6 +41,10 @@ class GameAddX:
         print(f'Score: {int(score)}%')
 
     def game(self):
+        audio_play_thread = Thread(target=self.play_beep)
+        audio_play_thread.daemon = True
+        audio_play_thread.start()
+
         for seq in self._game_session:
             pprint(self._game_session)
 
@@ -109,6 +119,14 @@ class GameAddX:
             "/": [str(int(x) / self._math_operation_sign) for x in number],
         }.get(self._math_operation, "Incorrect operation")
 
+    def play_beep(self):
+        for i in range(60):
+            #print(BEEP_PATH)
+            playsound(BEEP_PATH)
+            time.sleep(1)
+
+
+
 
 asd = ['1', '2', '3']
 qwe = ['1', '2', '3']
@@ -116,6 +134,9 @@ if asd == qwe:
     print("YEA")
 else:
     print("NYA")
+
+playsound(BEEP_PATH)
+
 
 # property na limity
 default_kwargs = {
