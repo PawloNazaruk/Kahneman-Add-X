@@ -5,11 +5,12 @@ from pprint import pprint
 import random
 import time
 
+import wave
+import contextlib
 
-#BEEP_PATH = 'media\\beep.wav'
+# BEEP_PATH = 'KahnemanAddX\\media\\beep.wav'
 BEEP_PATH = 'C:\\python\\projects\\KahnemanAddX\\media\\beep.wav'
 
-playsound(BEEP_PATH)
 
 class GameAddX:
 
@@ -27,23 +28,16 @@ class GameAddX:
         counter = 0
         print(self._game_session)
         for seq in self._game_session:
-            print('answer')
-            pprint(seq.answer_digits)
-            print('correct')
-            pprint(seq.correct_digits)
             if seq.answer_digits == seq.correct_digits:
                 counter += 1
 
-        print(counter)
-        print(self._numbers_amount)
         score = float((counter / self._numbers_amount) * 100)
         print(score)
-        print(f'Score: {int(score)}%')
 
     def game(self):
-        audio_play_thread = Thread(target=self.play_beep)
-        audio_play_thread.daemon = True
-        audio_play_thread.start()
+        audio_channel = Thread(target=self.play_beep_loop)
+        audio_channel.daemon = True
+        audio_channel.start()
 
         for seq in self._game_session:
             pprint(self._game_session)
@@ -68,6 +62,8 @@ class GameAddX:
                 else:
                     seq.answer_digits.append('')
                 self._input.clear()
+
+        audio_channel.join(timeout=10)
         print(self._game_session)
 
     def get_input(self):
@@ -94,7 +90,7 @@ class GameAddX:
 
             number = self.generate_number_from_range()
             number_digits = self.divide_on_digits(number)
-            correct_digits = self.generate_answer_number_digits(number)
+            correct_digits = self.calculate_correct_digits(number)
             answer_digits = []
 
             seq = Sequence(number_digits, correct_digits, answer_digits)
@@ -107,11 +103,7 @@ class GameAddX:
         number_max = int("".join(["9" for _ in range(self._number_length)]))
         return str(random.randint(number_min, number_max))
 
-    @staticmethod
-    def divide_on_digits(number: str) -> list:
-        return [x for x in number]
-
-    def generate_answer_number_digits(self, number: str) -> list:
+    def calculate_correct_digits(self, number: str) -> list:
         return {
             "+": [str(int(x) + self._math_operation_sign) for x in number],
             "-": [str(int(x) - self._math_operation_sign) for x in number],
@@ -119,30 +111,29 @@ class GameAddX:
             "/": [str(int(x) / self._math_operation_sign) for x in number],
         }.get(self._math_operation, "Incorrect operation")
 
-    def play_beep(self):
-        for i in range(60):
-            #print(BEEP_PATH)
-            playsound(BEEP_PATH)
-            time.sleep(1)
+    def play_beep_loop(self):
+        with contextlib.closing(wave.open(BEEP_PATH, 'r')) as f:
+            frames = f.getnframes()
+            rate = f.getframerate()
+            duration = frames / float(rate)
+            difference = self._time_per_number - duration
+            while True:
+                playsound(BEEP_PATH)
+                time.sleep(difference)
 
+    @staticmethod
+    def divide_on_digits(number: str) -> list:
+        return [x for x in number]
 
-
-
-asd = ['1', '2', '3']
-qwe = ['1', '2', '3']
-if asd == qwe:
-    print("YEA")
-else:
-    print("NYA")
-
-playsound(BEEP_PATH)
-
+    @staticmethod
+    def play_beep():
+        playsound(BEEP_PATH)
 
 # property na limity
 default_kwargs = {
             "length": 2,
             "amount": 2,
-            "time_for_number": 1,
+            "time_for_number": 4,
             "time_for_pause": 1,
             "operation": "+",
             "digit_for_operation": 1,
