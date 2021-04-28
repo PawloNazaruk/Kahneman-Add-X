@@ -11,14 +11,17 @@ import contextlib
 # BEEP_PATH = 'KahnemanAddX\\media\\beep.wav'
 BEEP_PATH = 'C:\\python\\projects\\KahnemanAddX\\media\\beep.wav'
 
+# TODO split na metody
+# TODO generator z kolekcji
+# TODO BEEP_PATH it should works from relative path
+
 
 class GameAddX:
 
-    def __init__(self, length: str, amount: str, time_for_number: str, time_for_pause: str, operation: str, digit_for_operation: str):
+    def __init__(self, length: str, amount: str, time_per_number: str, operation: str, digit_for_operation: str):
         self._number_length = int(length)
         self._numbers_amount = int(amount)
-        self._time_per_number = int(time_for_number)
-        self._time_per_pause = int(time_for_pause)
+        self._time_per_number = int(time_per_number)
         self._math_operation = operation
         self._math_operation_sign = int(digit_for_operation)
         self._game_session = self.make_game_session()
@@ -26,7 +29,6 @@ class GameAddX:
 
     def show_score(self):
         counter = 0
-        print(self._game_session)
         for seq in self._game_session:
             if seq.answer_digits == seq.correct_digits:
                 counter += 1
@@ -40,20 +42,22 @@ class GameAddX:
         audio_channel.start()
 
         for seq in self._game_session:
-            pprint(self._game_session)
-
             """displaying digits for memorise"""
             for digit in seq.number_digits:
+                print(time.perf_counter())
                 print(digit)
-                self.wait_number()
+                self.time_wait()
 
             """pause"""
-            self.wait_pause()
+            print(time.perf_counter())
+            self.time_wait()
 
             """catching answers"""
             for i in range(self._number_length):
+                print(time.perf_counter())
                 get_input_thread = Thread(target=self.get_input)
-                get_input_thread.daemon = True  # Otherwise the thread won't be terminated when the main program terminates.
+                # Otherwise the thread won't be terminated when the main program terminates.
+                get_input_thread.daemon = True
                 get_input_thread.start()
                 get_input_thread.join(timeout=self._time_per_number)
 
@@ -63,8 +67,9 @@ class GameAddX:
                     seq.answer_digits.append('')
                 self._input.clear()
 
-        audio_channel.join(timeout=10)
-        print(self._game_session)
+        print(time.perf_counter())
+        time_wait = self._number_length * self._numbers_amount * self._time_per_number
+        audio_channel.join(timeout=time_wait)
 
     def get_input(self):
         print("Waiting for input: ...")
@@ -72,11 +77,8 @@ class GameAddX:
             _input = input()
             self._input.append(_input)
 
-    def wait_number(self) -> None:
+    def time_wait(self) -> None:
         time.sleep(self._time_per_number)
-
-    def wait_pause(self) -> None:
-        time.sleep(self._time_per_pause)
 
     def make_game_session(self):
         Sequence = namedtuple("Sequence", [
@@ -129,12 +131,12 @@ class GameAddX:
     def play_beep():
         playsound(BEEP_PATH)
 
+
 # property na limity
 default_kwargs = {
             "length": 2,
-            "amount": 2,
-            "time_for_number": 4,
-            "time_for_pause": 1,
+            "amount": 6,
+            "time_per_number": 1,
             "operation": "+",
             "digit_for_operation": 1,
         }
